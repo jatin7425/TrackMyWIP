@@ -173,8 +173,6 @@
     font-weight: 500;
 }
 
-/* --- Responsive Styles --- */
-/* Targets tablets and mobile phones */
 @media (max-width: 700px) {
     #controls-container {
         padding: 0 15px;

@@ -1,12 +1,9 @@
-/* style.css */
 body {
     margin: 0;
-    font-family: sans-serif;
-    /* This transition smooths the content sliding */
+    font-family: 'Segoe UI', sans-serif;
     transition: margin-left 0.3s ease;
 }
 
-/* ===== Base ===== */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -19,10 +16,9 @@ body {
     color: white;
     padding: 0 15px;
     display: flex;
+    justify-content: flex-start;
     align-items: center;
-
     position: fixed;
-    /* Fix header to top */
     top: 0;
     left: 0;
     right: 0;
@@ -42,6 +38,7 @@ body {
 #app-title {
     font-size: 1.5em;
     margin: 0;
+    font-family: 'Segoe UI', sans-serif;
 }
 
 #sidebar {
@@ -75,10 +72,8 @@ body {
     }
 }
 
-/* --- Toggle Logic --- */
 body.sidebar-hidden #sidebar {
     transform: translateX(-100%);
-    /* Slide off-screen */
 }
 
 body.sidebar-hidden #main-content {
@@ -86,7 +81,6 @@ body.sidebar-hidden #main-content {
     /* Content fills space */
 }
 
-/* --- Sidebar List Styles --- */
 #sidebar nav {
     margin-top: 10px;
 }
@@ -101,6 +95,8 @@ body.sidebar-hidden #main-content {
     padding: 12px 15px;
     cursor: pointer;
     border-bottom: 1px solid #ddd;
+    color: #222;
+    font-family: sans-serif;
 }
 
 #sidebar li:hover {

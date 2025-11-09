@@ -1,78 +1,226 @@
-/* public/home.css */
+/* ===== Base Layout ===== */
+#auth-main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(120deg, #e3f2fd 0%, #f8f9fa 100%);
+}
 
+/* Split Layout */
 #home-container {
-    max-width: 400px;
-    margin: 20px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    width: 100%;
+    height: 100%;
 }
 
-#home-content {
-    text-align: center;
-}
-
-#home-content p {
-    font-size: 1.2em;
-    color: #333;
-}
-
-#signup-form,
-#login-form {
+/* ===== LEFT SIDE ===== */
+#home-container-left {
+    flex: 1;
+    padding: 4rem;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(6px);
+    border-right: 1px solid #eee;
+    box-shadow: inset -2px 0 6px rgba(0, 0, 0, 0.05);
+}
+
+#home-container-left h2 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 1rem;
+}
+
+#home-container-left h2 span {
+    color: #007bff;
+}
+
+#home-container-left p {
+    font-size: 1.1rem;
+    color: #555;
+    line-height: 1.6;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+/* ===== RIGHT SIDE ===== */
+#home-container-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== AUTH FORM ===== */
+#signup-form,
+#login-form {
+    width: 100%;
+    max-width: 420px;
+    background: #fff;
+    padding: 2.8rem 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+    animation: fadeIn 0.4s ease-out;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
 }
 
 #signup-form h2,
 #login-form h2 {
     text-align: center;
     color: #111;
-    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
 }
 
 #signup-form label,
 #login-form label {
     font-weight: 600;
     color: #333;
+    margin-bottom: 0.3rem;
 }
 
 #signup-form input,
 #login-form input {
-    padding: 10px;
-    font-size: 1em;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#signup-form input:focus,
+#login-form input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
 }
 
 #signup-form button,
-#login-form button,
-#home-content button {
-    padding: 12px;
-    font-size: 1.1em;
+#login-form button {
+    padding: 0.9rem;
+    font-size: 1.1rem;
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.25s ease;
+    font-weight: 600;
 }
 
 #signup-form button:hover,
-#login-form button:hover,
-#home-content button:hover {
+#login-form button:hover {
     background-color: #0056b3;
+    transform: translateY(-2px);
 }
 
 #signup-form p,
 #login-form p {
     text-align: center;
-    margin-top: 10px;
+    color: #555;
+    font-size: 0.95rem;
+    margin-top: 0.8rem;
 }
 
 #signup-form a,
 #login-form a {
     color: #007bff;
     text-decoration: none;
+    font-weight: 500;
 }
+
+#signup-form a:hover,
+#login-form a:hover {
+    text-decoration: underline;
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+    #home-container {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+    }
+
+    #home-container-left {
+        background: transparent;
+        align-items: center;
+        text-align: center;
+        border-right: none;
+        box-shadow: none;
+        padding: 0 0 2rem 0;
+    }
+
+    #home-container-left h2 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        margin: auto;
+    }
+
+    #home-container-left p {
+        font-size: 1rem;
+        max-width: 90%;
+        margin: 0 auto;
+    }
+
+    #home-container-right {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+        padding: 1rem;
+    }
+
+    #signup-form,
+    #login-form {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.25);
+        animation: popIn 0.3s ease-out;
+        max-width: 360px;
+        width: 100%;
+        padding: 2rem 1.5rem;
+        gap: 1rem;
+    }
+
+    @keyframes popIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+} 

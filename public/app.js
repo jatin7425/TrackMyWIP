@@ -1,32 +1,23 @@
 // public/home.js
 
 document.addEventListener('DOMContentLoaded', () => {
-    const homeContainer = document.getElementById('home-container');
+    // Get the container for the auth forms
+    const authContainer = document.getElementById('home-container-right');
 
-    // ---- Helper to reset container ----
-    const clearContainer = () => {
-        if (homeContainer) {
-            homeContainer.innerHTML = '';
-        }
-    };
+    // If the container doesn't exist on the page, don't run
+    if (!authContainer) {
+        console.error('Error: Auth container #home-container-right not found.');
+        return;
+    }
 
-    // ---- Home Screen ----
-    const renderHome = () => {
-        clearContainer();
-        const div = document.createElement('div');
-        div.id = 'home-content';
-        div.innerHTML = `
-      <p>Track your daily progress easily.</p>
-      <button id="get-started-btn">Get Started</button>
-    `;
-        homeContainer.appendChild(div);
-        // Add listener *after* button is created
-        document.getElementById('get-started-btn').addEventListener('click', renderSignupForm);
+    // ---- Helper to reset *only* the auth container ----
+    const clearAuthContainer = () => {
+        authContainer.innerHTML = '';
     };
 
     // ---- Signup Form ----
     const renderSignupForm = () => {
-        clearContainer();
+        clearAuthContainer();
 
         const form = document.createElement('form');
         form.id = 'signup-form';
@@ -43,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <p><a href="#" id="login-link">Already have an account? Log in here.</a></p>
     `;
 
-        homeContainer.appendChild(form);
+        authContainer.appendChild(form);
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -62,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (res.ok) {
                     alert(data.message || 'Signup complete. Check console for temp password.');
-                    console.log('Temp Password:', data.tempPassword); // Log password for testing
+                    console.log('Temp Password:', data.tempPassword);
                     renderLoginForm();
                 } else {
                     alert(data.message || 'Signup failed.');
@@ -79,15 +70,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // ---- Login Form (Updated for 2-Step OTP) ----
     const renderLoginForm = () => {
-        clearContainer();
+        clearAuthContainer();
 
         const form = document.createElement('form');
         form.id = 'login-form';
         form.innerHTML = `
       <h2>Login</h2>
-      <p>Enter your username to receive a one-time password (OTP).</p>
+      <p>Enter your username to receive an OTP.</p>
 
       <label for="username">Username</label>
       <input type="text" id="username" name="username" required>
@@ -101,14 +91,14 @@ document.addEventListener('DOMContentLoaded', () => {
       <p><a href="#" id="signup-link">Don’t have an account? Sign up</a></p>
     `;
 
-        homeContainer.appendChild(form);
+        authContainer.appendChild(form);
 
         const usernameInput = form.username;
         const otpInput = form.otp;
         const otpField = document.getElementById('otp-field');
         const submitBtn = document.getElementById('login-submit-btn');
 
-        let isOtpStep = false; // State to track which step we are on
+        let isOtpStep = false;
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -116,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!username) return alert('Please enter your username.');
 
-            // --- Step 1: Send OTP ---
             if (!isOtpStep) {
                 try {
                     const res = await fetch('/api/auth/login-start', {
@@ -128,11 +117,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (res.ok) {
                         alert(data.message);
-                        console.log('Test OTP:', data.otpForTesting); // For development
-                        // Show OTP field and change button
+                        console.log('Test OTP:', data.otpForTesting);
                         otpField.style.display = 'block';
                         submitBtn.textContent = 'Verify & Login';
-                        usernameInput.readOnly = true; // Lock username
+                        usernameInput.readOnly = true;
                         isOtpStep = true;
                     } else {
                         alert(data.message || 'Error sending OTP.');
@@ -141,9 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert('Server error.');
                     console.error(err);
                 }
-            }
-            // --- Step 2: Verify OTP ---
-            else {
+            } else {
                 const otp = otpInput.value.trim();
                 if (!otp) return alert('Please enter your OTP.');
 
@@ -157,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (data.success) {
                         alert('Login successful!');
-                        window.location.href = '/view-wips'; // Redirect to main app
+                        window.location.href = '/view-wips';
                     } else {
                         alert(data.message || 'Invalid OTP.');
                     }
@@ -174,7 +160,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // ---- Init ----
-    // Start by showing the home screen
-    renderHome();
+    renderLoginForm();
 });
