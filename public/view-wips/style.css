@@ -36,7 +36,7 @@
 }
 
 #wip-container {
-    max-width: 850px;
+    max-width: 1200px;
     margin: 20px auto;
     padding: 25px;
     background: #ffffff;
@@ -48,7 +48,7 @@
 .wip-entry {
     margin-bottom: 5px;
     padding: 15px;
-    background: #e6e6e6;
+    background: #f8f8f8;
     border-radius: 6px;
 }
 
