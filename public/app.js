@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const data = await res.json();
 
                     if (res.ok) {
-                        alert(data.message);
+                        alert('Test OTP:', data.otpForTesting);
                         console.log('Test OTP:', data.otpForTesting);
                         otpField.style.display = 'block';
                         submitBtn.textContent = 'Verify & Login';
