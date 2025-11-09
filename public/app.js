@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         alert(data.message);
                         console.log('Test OTP:', data.otpForTesting);
                         otpField.style.display = 'block';
-                        otpField.value = data.otpForTesting;
+                        otpInput.value = data.otpForTesting;
                         submitBtn.textContent = 'Verify & Login';
                         usernameInput.readOnly = true;
                         isOtpStep = true;
