@@ -1,5 +1,20 @@
+/* Basic page layout */
+:root {
+    --bg: #f5f7f9;
+    --card: #fff;
+    --muted: #6b7280;
+    --accent: #1a73e8;
+    --shadow: 0 10px 20px rgba(23, 23, 23, 0.06);
+    --radius: 12px;
+    --maxwidth: 1100px;
+    --gap: 18px;
+    --ui-font: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+
 #main-content {
-    padding: 2rem;
+    margin: 22px auto;
+    padding: 0 16px
 }
 
 #main-content h2 {
@@ -174,12 +189,27 @@
     transition: background-color 0.2s;
 }
 
+.copy-wip-btn {
+    border: 1px solid #e6e7e9;
+    background: #fff;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.copy-wip-btn:hover {
+    background: #f3f6ff
+}
+
 #back-to-share-btn:hover {
     background: #e0e0e0;
 }
 
 .viewer-header h2 {
     margin-bottom: 0;
+    color: #1a73e8;
 }
 
 #viewing-username {
@@ -218,6 +248,8 @@
 
 #wip-data-container {
     margin-top: 1.5rem;
+    display: block;
+    gap: 18px
 }
 
 /* Styles for the rendered WIP data */
@@ -228,13 +260,40 @@
     margin-bottom: 1rem;
 }
 
-.wip-day-card h4 {
-    font-size: 1.1rem;
-    font-weight: 600;
+/* Header inside a card */
+.wip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
     background: #f9f9f9;
     padding: 0.75rem 1.25rem;
     border-bottom: 1px solid #e0e0e0;
     margin: 0;
+}
+
+.wip-day-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 0;
+}
+
+
+
+.copy-wip-btn {
+    border: 1px solid #e6e7e9;
+    background: #fff;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.copy-wip-btn:hover {
+    background: #f3f6ff
 }
 
 .wip-day-card ul {
@@ -250,4 +309,32 @@
     color: #333;
     margin-bottom: 0.5rem;
     line-height: 1.5;
+}
+
+/* small-screen responsive */
+@media (max-width:900px) {
+    .controls {
+        flex-direction: column;
+        align-items: stretch
+    }
+
+    .filters {
+        flex-wrap: wrap
+    }
+
+    .filter-group input {
+        min-width: 120px
+    }
+
+    .app-title {
+        font-size: 22px
+    }
+
+    .wip-date {
+        font-size: 20px
+    }
+
+    .primary-btn {
+        width: 100%
+    }
 }

@@ -233,9 +233,36 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = document.createElement('div');
             card.className = 'wip-day-card';
 
+            const btnGroup = document.createElement('div');
+            btnGroup.className = 'wip-button-group';
+
+            const header = document.createElement('div');
+            header.className = 'wip-header';
+
             const title = document.createElement('h4');
             title.textContent = displayDate;
-            card.appendChild(title);
+            header.appendChild(title);
+
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-wip-btn';
+            copyBtn.textContent = 'Copy';
+            copyBtn.title = 'Copy to clipboard';
+            copyBtn.addEventListener('click', async () => {
+                const markdown = [displayDate, '', ...points.map(p => `- ${p}`)].join('\n');
+                try {
+                    await navigator.clipboard.writeText(markdown);
+                    const prev = copyBtn.textContent;
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => copyBtn.textContent = prev, 1800);
+                } catch (e) {
+                    console.error('Copy failed', e);
+                    alert('Copy failed: ' + (e && e.message ? e.message : 'clipboard error'));
+                }
+            });
+
+
+            btnGroup.appendChild(copyBtn);
+            header.appendChild(btnGroup);
 
             const list = document.createElement('ul');
             points.forEach(point => {
@@ -243,8 +270,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 li.textContent = point;
                 list.appendChild(li);
             });
+            card.appendChild(header);
             card.appendChild(list);
-
             wipDataContainer.appendChild(card);
         });
     }
