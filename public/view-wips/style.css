@@ -24,35 +24,6 @@ body {
     color: #111
 }
 
-.app-header {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    padding: 18px 20px;
-    background: linear-gradient(180deg, #2f3236, #26292c);
-    color: #fff;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
-}
-
-.hamburger {
-    background: transparent;
-    border: none;
-    color: inherit;
-    font-size: 20px;
-    cursor: pointer;
-    padding: 6px 10px;
-    border-radius: 6px
-}
-
-.app-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-top: 0;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 0.75rem;
-}
-
 .header-spacer {
     flex: 1
 }
