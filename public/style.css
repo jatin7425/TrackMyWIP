@@ -1,0 +1,125 @@
+/* style.css */
+body {
+    margin: 0;
+    font-family: sans-serif;
+    /* This transition smooths the content sliding */
+    transition: margin-left 0.3s ease;
+}
+
+/* ===== Base ===== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+#header {
+    height: 60px;
+    background: #333;
+    color: white;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+
+    position: fixed;
+    /* Fix header to top */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#sidebar-toggle {
+    font-size: 24px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin-right: 15px;
+}
+
+#app-title {
+    font-size: 1.5em;
+    margin: 0;
+}
+
+#sidebar {
+    width: 200px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #f4f4f4;
+    padding: 10px;
+
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    transform: translateX(0);
+    /* Start visible */
+    z-index: 10;
+}
+
+#main-content {
+    margin-left: 220px;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+}
+
+@media (max-width: 900px) {
+    #main-content {
+        margin-left: 0;
+        padding: 20px;
+        z-index: 0;
+        transition: margin-left 0.3s ease;
+    }
+}
+
+/* --- Toggle Logic --- */
+body.sidebar-hidden #sidebar {
+    transform: translateX(-100%);
+    /* Slide off-screen */
+}
+
+body.sidebar-hidden #main-content {
+    margin-left: 0;
+    /* Content fills space */
+}
+
+/* --- Sidebar List Styles --- */
+#sidebar nav {
+    margin-top: 10px;
+}
+
+#sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#sidebar li {
+    padding: 12px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+}
+
+#sidebar li:hover {
+    background-color: #e0e0e0;
+}
+
+#auth-main-content {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#get-started-btn {
+    display: inline-block;
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    color: #333;
+    font-size: large;
+    cursor: pointer;
+}

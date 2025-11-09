@@ -1,0 +1,245 @@
+#controls-container {
+    max-width: 850px;
+    margin: 20px auto 20px auto;
+    padding: 0 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    justify-items: center;
+    gap: 20px;
+}
+
+#wip-filters {
+    display: flex;
+    gap: 20px;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-group label {
+    font-size: 0.9em;
+    font-weight: 500;
+    color: #333;
+}
+
+.filter-group select {
+    padding: 8px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+#wip-container {
+    max-width: 850px;
+    margin: 20px auto;
+    padding: 25px;
+    background: #ffffff;
+    color: #333;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.wip-entry {
+    margin-bottom: 5px;
+    padding: 15px;
+    background: #e6e6e6;
+    border-radius: 6px;
+}
+
+.wip-date {
+    font-size: 1.4em;
+    font-weight: 600;
+    color: #1a73e8;
+    padding-bottom: 8px;
+}
+
+.wip-list {
+    list-style-type: disc;
+    padding-left: 30px;
+    margin: 0;
+}
+
+.wip-item {
+    font-size: 1.1em;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+.loading,
+.error {
+    font-style: italic;
+    color: #777;
+}
+
+.wip-date {
+    margin: 0;
+    padding-bottom: 8px;
+    border-bottom: none;
+}
+
+.copy-wip-btn:hover {
+    background-color: #d1d1d1;
+}
+
+.copy-wip-btn:active {
+    background-color: #c5c5c5;
+}
+
+/* --- New Export Button Styles --- */
+#export-controls {
+    max-width: 850px;
+    padding: 0 50px;
+    text-align: right;
+}
+
+#export-csv-btn {
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+#export-csv-btn:hover {
+    background-color: #1663c7;
+}
+
+#export-csv-btn:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+.wip-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
+}
+
+.wip-button-group {
+    display: flex;
+    gap: 5px;
+}
+
+.copy-wip-btn {
+    background-color: #e0e0e0;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.delete-wip-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.delete-wip-btn:hover {
+    background-color: #c82333;
+}
+
+#export-controls {
+    /* (This was in your previous CSS) */
+    text-align: right;
+}
+
+#export-csv-btn {
+    /* (This was in your previous CSS) */
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+/* --- Responsive Styles --- */
+/* Targets tablets and mobile phones */
+@media (max-width: 700px) {
+    #controls-container {
+        padding: 0 15px;
+        margin: 15px auto;
+    }
+
+    #wip-container {
+        padding: 15px;
+        margin: 15px auto;
+    }
+
+    #controls-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    #wip-filters {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .filter-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .filter-group select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    #export-controls {
+        text-align: left;
+        padding: 0;
+    }
+
+    #export-csv-btn {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .wip-header-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+
+    .wip-date {
+        font-size: 1.25em;
+    }
+
+    .wip-item {
+        font-size: 1.0em;
+        line-height: 1.4;
+    }
+
+    .copy-wip-btn,
+    .delete-wip-btn,
+    #export-csv-btn {
+        padding: 12px 15px;
+        font-size: 1.0em;
+    }
+}

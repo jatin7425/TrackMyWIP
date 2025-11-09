@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WIP Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="add-wip/style.css">
+
+    <script src="add-wip/addWip.js"></script>
+    <script src="../component/header.js" defer></script>
+    <script src="../component/sidebar.js" defer></script>
+</head>
+
+<body>
+
+    <header id="header">
+        <button id="sidebar-toggle">☰</button>
+        <h1 id="app-title">WIP Tracker</h1>
+    </header>
+
+    <aside id="sidebar"></aside>
+
+    <main id="main-content">
+        <section id="add-wip-section">
+            <h2>Add New WIP</h2>
+
+            <form id="add-wip-form">
+                <div>
+                    <label for="wip-date">Date:</label>
+                    <input type="date" id="wip-date" name="wip-date" required>
+                </div>
+
+                <div id="bullet-points-container"></div>
+
+                <button type="button" id="add-bullet-point">+ Add Bullet Point</button>
+
+                <button type="submit" id="save-wip">Save WIP</button>
+            </form>
+        </section>
+
+        <section id="wip-preview">
+            <h2>Preview</h2>
+            <ul id="preview-list"></ul>
+        </section>
+    </main>
+
+</body>
+
+</html>
