@@ -1,0 +1,253 @@
+#main-content {
+    padding: 2rem;
+}
+
+#main-content h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #222;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.75rem;
+}
+
+.card-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .card-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+#share-form {
+    display: flex;
+    gap: 0.5rem;
+}
+
+#share-form input[type="text"] {
+    flex-grow: 1;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+#share-form button {
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#share-form button:hover {
+    background-color: #0056b3;
+}
+
+.user-list {
+    min-height: 100px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.user-item:last-child {
+    border-bottom: none;
+}
+
+.user-item span {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.user-item .revoke-btn,
+.user-item .view-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.revoke-btn {
+    background-color: #fce8e6;
+    color: #c9342c;
+}
+
+.revoke-btn:hover {
+    background-color: #f7d5d2;
+}
+
+.view-btn {
+    background-color: #e6f7ff;
+    color: #007bff;
+}
+
+.view-btn:hover {
+    background-color: #d0ecff;
+}
+
+.loader,
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #888;
+    font-style: italic;
+}
+
+.message {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    /* Hidden by default */
+}
+
+.message.success {
+    background-color: #e6f7ec;
+    color: #0a6c34;
+    display: block;
+}
+
+.message.error {
+    background-color: #fce8e6;
+    color: #c9342c;
+    display: block;
+}
+
+/* --- NEW STYLES FOR WIP VIEWER --- */
+
+/* Helper to hide sections */
+.hidden {
+    display: none;
+}
+
+.viewer-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+#back-to-share-btn {
+    background: #f1f1f1;
+    border: 1px solid #ddd;
+    color: #333;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#back-to-share-btn:hover {
+    background: #e0e0e0;
+}
+
+.viewer-header h2 {
+    margin-bottom: 0;
+}
+
+#viewing-username {
+    color: #007bff;
+}
+
+#wip-controls form {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#wip-controls select {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: white;
+}
+
+#wip-controls button {
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#wip-controls button:hover {
+    background-color: #218838;
+}
+
+#wip-data-container {
+    margin-top: 1.5rem;
+}
+
+/* Styles for the rendered WIP data */
+.wip-day-card {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 1rem;
+}
+
+.wip-day-card h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: #f9f9f9;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid #e0e0e0;
+    margin: 0;
+}
+
+.wip-day-card ul {
+    list-style-type: disc;
+    padding-left: 2.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    margin: 0;
+}
+
+.wip-day-card li {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}

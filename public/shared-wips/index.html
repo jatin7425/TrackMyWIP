@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WIP Tracker - Shared WIPs</title>
+    <link rel="stylesheet" href="shared-wips/style.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="shared-wips/sharedWip.js" defer></script>
+    <script src="../component/header.js" defer></script>
+    <script src="../component/sidebar.js" defer></script>
+</head>
+
+<body>
+
+    <header id="header">
+        <button id="sidebar-toggle">☰</button>
+        <h1 id="app-title">Track My Wip</h1>
+    </header>
+
+    <aside id="sidebar"></aside>
+
+    <main id="main-content">
+
+        <section id="share-management-section">
+            <h2>Manage WIP Sharing</h2>
+
+            <div class="card" id="grant-access">
+                <h3>Share Your WIP</h3>
+                <p>Enter a username to grant them read-only access.</p>
+                <form id="share-form">
+                    <input type="text" id="share-username-input" placeholder="Username to share with" required>
+                    <button type="submit">Grant Access</button>
+                </form>
+                <div id="share-message" class="message"></div>
+            </div>
+
+            <div class="card-container">
+                <div class="card" id="gave-access">
+                    <h3>Users With Access to My WIP</h3>
+                    <div id="i-gave-access-list" class="user-list">
+                        <div class="loader">Loading...</div>
+                    </div>
+                </div>
+
+                <div class="card" id="can-access">
+                    <h3>WIPs Shared With Me</h3>
+                    <div id="i-can-access-list" class="user-list">
+                        <div class="loader">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="wip-viewer-section" class="hidden">
+            <div class="viewer-header">
+                <button id="back-to-share-btn">&larr; Back to Sharing</button>
+                <h2>Viewing WIP for <span id="viewing-username">...</span></h2>
+            </div>
+
+            <div class="card" id="wip-controls">
+                <form id="wip-fetch-form">
+                    <select id="wip-year" required>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                    </select>
+                    <select id="wip-month" required>
+                        <option value="01">January</option>
+                        <option value="02">February</option>
+                        <option value="03">March</option>
+                        <option value="04">April</option>
+                        <option value="05">May</option>
+                        <option value="06">June</option>
+                        <option value="07">July</option>
+                        <option value="08">August</option>
+                        <option value="09">September</option>
+                        <option value="10">October</option>
+                        <option value="11" selected>November</option>
+                        <option value="12">December</option>
+                    </select>
+                    <button type="submit">Fetch WIP</button>
+                </form>
+            </div>
+
+            <div id="wip-data-container">
+                <div class="empty-state">Select a year and month to load data.</div>
+            </div>
+        </section>
+
+    </main>
+
+</body>
+
+</html>

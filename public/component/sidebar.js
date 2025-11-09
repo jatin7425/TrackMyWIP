@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadsidebar = () => {
         const navigationItems = [
             { href: '/add-wip', title: 'Add WIP' },
-            { href: '/view-wips', title: 'View WIP' },
+            { href: '/view-wips', title: 'View WIPs' },
+            { href: '/shared-wips', title: 'Shared WIPs' },
         ];
         const nav = document.createElement('nav');
         const ul = document.createElement('ul');
