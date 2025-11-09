@@ -28,11 +28,6 @@ export default async function handler(req, res) {
         // Store the OTP in KV
         await kv.set(`otp:${username}`, { code: otp, expiresAt }, { ex: 600 }); // 10 min expiry
 
-        // --- Real-World Step ---
-        // Here you would use an SMS API (like Twilio) to send:
-        // `await sendSms(user.mobile, `Your WIP Tracker login code is: ${otp}`);`
-        // --- End Real-World Step ---
-
         return res.status(200).json({
             success: true,
             message: "OTP has been sent to your mobile.",
