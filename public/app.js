@@ -1,6 +1,7 @@
 // public/home.js
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+
     // Get the container for the auth forms
     const authContainer = document.getElementById('home-container-right');
 
@@ -159,6 +160,19 @@ document.addEventListener('DOMContentLoaded', () => {
             renderSignupForm();
         });
     };
+
+    try {
+        const res = await fetch('/api/auth/check-session', { method: 'GET' });
+        const data = await res.json();
+
+        if (res.ok && data.loggedIn) {
+            // Already logged in → redirect
+            window.location.href = '/view-wips';
+            return;
+        }
+    } catch (err) {
+        console.warn('Session check failed:', err);
+    }
 
     renderLoginForm();
 });
