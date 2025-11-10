@@ -1,4 +1,24 @@
-// Wait until the HTML document is fully loaded
+async function correctGrammarClient(text) {
+    try {
+        const response = await fetch('/api/grammer/correct', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text }),
+        });
+
+        if (!response.ok) {
+            console.error('Grammar correction failed:', response.statusText);
+            return text;
+        }
+
+        const data = await response.json();
+        return data.text || text;
+    } catch (err) {
+        console.error('Error calling grammar correction API:', err);
+        return text;
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const addWipForm = document.getElementById('add-wip-form');
     const addBulletPointButton = document.getElementById('add-bullet-point');
@@ -79,7 +99,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        div.append(moveUpBtn, moveDownBtn, input, removeBtn);
+        const checkGrammarBtn = document.createElement('button');
+        checkGrammarBtn.type = 'button';
+        checkGrammarBtn.textContent = '🧠 Fix';
+        checkGrammarBtn.className = 'grammar-btn';
+        checkGrammarBtn.addEventListener('click', async () => {
+            const corrected = await correctGrammarClient(input.value);
+            input.value = corrected;
+            updatePreview();
+        });
+
+        div.append(moveUpBtn, moveDownBtn, input, checkGrammarBtn, removeBtn);
         bulletPointsContainer.appendChild(div);
 
         updatePreview();
@@ -131,16 +161,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (response.ok) {
-                alert('✅ WIP added successfully!');
+                alert('WIP added successfully!');
                 addWipForm.reset();
                 bulletPointsContainer.innerHTML = '';
                 updatePreview();
             } else {
-                alert('❌ Failed to add WIP: ' + (result.message || 'Unknown error'));
+                alert('Failed to add WIP: ' + (result.message || 'Unknown error'));
             }
         } catch (err) {
             console.error('Error adding WIP:', err);
-            alert('❌ Network or server error.');
+            alert('Network or server error.');
         }
     });
 });

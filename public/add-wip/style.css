@@ -55,6 +55,19 @@ input[type="text"] {
     margin-right: 10px;
 }
 
+.grammar-btn {
+    margin-left: 6px;
+    background: #eef;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 2px 6px;
+}
+
+.grammar-btn:hover {
+    background: #cce;
+}
+
 #add-bullet-point:hover {
     background: #4338ca;
 }
