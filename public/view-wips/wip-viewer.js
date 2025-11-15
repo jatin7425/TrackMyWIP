@@ -64,25 +64,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // Convert server data -> sorted keys, then create DOM
     function renderWips(data) {
         wipContainer.innerHTML = '';
-        if (!data || Object.keys(data).length === 0) {
+        // Data is now an Array, check length instead of object keys
+        if (!data || data.length === 0) {
             showMessage('No WIPs found for this month.');
             return;
         }
 
-        // Keys format: something like "user:username:YYYY:MM:DD" (matches your previous format)
-        const sortedKeys = Object.keys(data).sort((a, b) => {
-            const [, , y1, m1, d1] = a.split(':');
-            const [, , y2, m2, d2] = b.split(':');
-            return new Date(`${y1}-${m1}-${d1}`) - new Date(`${y2}-${m2}-${d2}`);
+        // Sort the array of objects by date
+        const sortedEntries = data.sort((a, b) => {
+            // We can sort directly on the 'date' property which is in 'YYYY-MM-DD' format
+            return new Date(a.date) - new Date(b.date);
         });
 
-        sortedKeys.forEach(key => {
-            const points = data[key] || [];
-            const parts = key.split(':');
-            if (parts.length < 5) return;
-            const username = parts[1];
-            const [, , y, m, d] = parts;
-            const dateISO = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        // Iterate over the sorted array of entry objects
+        sortedEntries.forEach(entry => {
+            // Extract properties directly from the entry object
+            const { date, username, points } = entry;
+
+            // date is already YYYY-MM-DD, no need for complex key splitting
+            const dateISO = date;
+
+            // Ensure points is an array for safety
+            const entryPoints = Array.isArray(points) ? points : [];
+
+            // Formatting the date for display
             const displayDate = new Date(dateISO + 'T12:00:00').toLocaleDateString('en-US', {
                 weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
             });
@@ -108,7 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
             copyBtn.textContent = 'Copy';
             copyBtn.title = 'Copy to clipboard';
             copyBtn.addEventListener('click', async () => {
-                const markdown = [displayDate, '', ...points.map(p => `- ${p}`)].join('\n');
+                // Use entryPoints array
+                const markdown = [displayDate, '', ...entryPoints.map(p => `- ${p}`)].join('\n');
                 try {
                     await navigator.clipboard.writeText(markdown);
                     const prev = copyBtn.textContent;
@@ -127,8 +133,13 @@ document.addEventListener('DOMContentLoaded', () => {
             deleteBtn.title = 'Delete entry';
             deleteBtn.addEventListener('click', async () => {
                 if (!confirm(`Are you sure you want to delete all WIPs for ${displayDate}?`)) return;
+
+                // Extract y, m, d from the date property (YYYY-MM-DD)
+                const [y, m, d] = date.split('-');
+
                 try {
-                    const resp = await fetch(`/api/wip?year=${y}&month=${String(m)}&day=${String(d)}`, {
+                    // Use the correct parameters from the new object structure
+                    const resp = await fetch(`/api/wip?year=${y}&month=${m}&day=${d}`, {
                         method: 'DELETE'
                     });
                     const result = await resp.json().catch(() => ({}));
@@ -153,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // list
             const ul = document.createElement('ul');
             ul.className = 'wip-list';
-            points.forEach(point => {
+            entryPoints.forEach(point => {
                 const li = document.createElement('li');
                 li.className = 'wip-item';
                 li.textContent = point;
@@ -166,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
             wipContainer.appendChild(card);
 
             // for search: combine date + username + points
-            card.dataset.text = (displayDate + ' ' + username + ' ' + points.join(' ')).toLowerCase();
+            card.dataset.text = (displayDate + ' ' + username + ' ' + entryPoints.join(' ')).toLowerCase();
         });
     }
 

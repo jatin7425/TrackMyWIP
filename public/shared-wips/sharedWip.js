@@ -204,25 +204,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Renders the fetched WIP data into the container.
-     * @param {object} data - The data object, e.g., {"wip:user:2025:11:09": [...]}
+     * @param {Array<object>} data - The data array, e.g., [{date: "2025-11-03", points: [...], ...}]
      */
     function renderWipData(data) {
         wipDataContainer.innerHTML = ''; // Clear loader
-        const keys = Object.keys(data).sort(); // Sort keys by date
 
-        if (keys.length === 0) {
+        // Ensure data is an array
+        if (!Array.isArray(data)) {
+            wipDataContainer.innerHTML = '<div class="empty-state error">Invalid data format received.</div>';
+            return;
+        }
+
+        if (data.length === 0) {
             wipDataContainer.innerHTML = '<div class="empty-state">No WIP data found for this period.</div>';
             return;
         }
 
-        keys.forEach(key => {
-            const points = data[key];
+        // Sort the array of objects by the 'date' property
+        const sortedEntries = data.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        sortedEntries.forEach(entry => {
+            // **CHANGE: Extract date and points directly from the entry object**
+            const dateStr = entry.date;
+            const points = entry.points;
+
             if (!points || points.length === 0) return; // Skip empty days
 
-            // Extract date from key "wip:user:YYYY:MM:DD"
-            const parts = key.split(':');
-            const dateStr = parts.slice(2).join('-'); // "YYYY-MM-DD"
-            const date = new Date(dateStr + 'T00:00:00'); // Use T00:00 to avoid timezone issues
+            // The date is already in YYYY-MM-DD format
+            const date = new Date(dateStr + 'T12:00:00'); // Use T12:00:00 to avoid local timezone issues
             const displayDate = date.toLocaleDateString('en-US', {
                 weekday: 'long',
                 year: 'numeric',

@@ -1,168 +1,169 @@
-// api/wip-handler.js
-import { kv } from '@vercel/kv';
-import jwt from 'jsonwebtoken';
 import { parse } from 'cookie';
+import jwt from 'jsonwebtoken';
+import { MongoClient } from "mongodb";
 
-/**
- * Helper: Gets the authenticated username from the session token.
- */
+const MONGO_URL = process.env.MONGODB_URI;
+const DB_NAME = process.env.DB_NAME || "wip_tracker";
+
+let client;
+let db;
+
+async function getDb() {
+    if (db) return db;
+
+    client = new MongoClient(MONGO_URL);
+    await client.connect();
+
+    db = client.db(DB_NAME);
+    return db;
+}
+
+// ------------------ AUTH HELPER ------------------
 const getUsernameFromToken = (req) => {
-    // ... (This helper function is identical) ...
     const { JWT_SECRET } = process.env;
     const cookies = parse(req.headers.cookie || '');
     const token = cookies.auth_token;
+
     if (!token) return null;
+
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
         return decoded.username || null;
-    } catch (err) {
+    } catch {
         return null;
     }
 };
 
+// ------------------ MAIN HANDLER ------------------
 export default async function handler(req, res) {
-    // --- Handle CORS ---
+    // --- CORS ---
     res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     if (req.method === 'OPTIONS') return res.status(200).end();
 
-    // --- Authentication ---
+    // --- AUTH ---
     const authenticatedUser = getUsernameFromToken(req);
     if (!authenticatedUser) {
-        return res.status(401).json({ message: 'Unauthorized. Please log in.' });
+        return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    try {
-        // Helper: build Redis key
-        const buildKey = (dateString, username) => {
-            const user = username || authenticatedUser;
-            const date = new Date(dateString);
-            const y = date.getFullYear();
-            const m = String(date.getMonth() + 1).padStart(2, '0');
-            const d = String(date.getDate()).padStart(2, '0');
-            return `wip:${user}:${y}:${m}:${d}`;
-        };
+    // --- DB INIT ---
+    const db = await getDb();
+    const WIP = db.collection('wip_entries');
+    const ACCESS = db.collection('access_lists');
 
-        // --- CREATE (POST) ---
-        // (Unchanged) - Always applies to the authenticated user
+    try {
+        // ------------------------------------------------------
+        // CREATE (POST)
+        // ------------------------------------------------------
         if (req.method === 'POST') {
             const { date, points } = req.body;
-            if (!date || !Array.isArray(points))
-                return res.status(400).json({ message: 'Date and points[] are required.' });
 
-            const key = buildKey(date, authenticatedUser);
-            await kv.set(key, points);
-            return res.status(200).json({ success: true, message: `Saved WIP for ${key}` });
+            if (!date || !Array.isArray(points)) {
+                return res.status(400).json({ message: 'date and points[] required' });
+            }
+
+            const d = new Date(date);
+            const doc = {
+                username: authenticatedUser,
+                date,
+                year: d.getFullYear(),
+                month: String(d.getMonth() + 1).padStart(2, '0'),
+                day: String(d.getDate()).padStart(2, '0'),
+                points
+            };
+
+            await WIP.updateOne(
+                { username: authenticatedUser, date },
+                { $set: doc },
+                { upsert: true }
+            );
+
+            return res.json({ success: true });
         }
 
-        // --- READ (GET) ---
-        // (Logic updated to use the new "access" key)
+        // ------------------------------------------------------
+        // READ (GET)
+        // ------------------------------------------------------
         if (req.method === 'GET') {
             const { year, month, day, viewUser } = req.query;
+
             let targetUser;
 
             if (!viewUser || viewUser === authenticatedUser) {
-                // Case 1: User is requesting their own data
                 targetUser = authenticatedUser;
             } else {
-                // Case 2: User is requesting someone else's data
-                const owner = viewUser;
+                // Permission check -- viewer should be allowed by the owner (viewUser).
+                // Find the access list for the owner we want to view, then check
+                // whether the authenticated viewer is present in that owner's allowed_users.
+                const accessDoc = await ACCESS.findOne({ owner: viewUser });
 
-                // Check if the owner's name is in my "access" list
-                const myAccessListKey = `access:${authenticatedUser}`;
-                const hasAccess = await kv.sismember(myAccessListKey, owner);
-
-                if (!hasAccess) {
-                    return res.status(403).json({ message: "Forbidden: You do not have read access to this user's data." });
+                const allowed = accessDoc?.allowed_users?.includes(authenticatedUser);
+                if (!allowed) {
+                    return res.status(403).json({ message: 'Forbidden' });
                 }
 
-                // Permission granted!
-                targetUser = owner;
+                targetUser = viewUser;
             }
 
-            // --- All read operations now use targetUser ---
+            const filter = { username: targetUser };
 
-            // Specific day
-            if (year && month && day) {
-                const key = `wip:${targetUser}:${year}:${month}:${day}`;
-                const data = await kv.get(key);
-                return res.status(200).json({ data: { [key]: data || [] } });
-            }
+            if (year) filter.year = Number(year);
+            if (month) filter.month = month;
+            if (day) filter.day = day;
 
-            // Whole month
-            if (year && month) {
-                const pattern = `wip:${targetUser}:${year}:${month}:*`;
-                // (Note: kv.keys() can be slow on large datasets.
-                // For a production app, you'd want to restructure this.)
-                const keys = await kv.keys(pattern);
-                const result = {};
-                for (const key of keys) {
-                    result[key] = await kv.get(key);
-                }
-                return res.status(200).json({ data: result });
-            }
+            const items = await WIP.find(filter).toArray();
 
-            // Whole year
-            if (year) {
-                const pattern = `wip:${targetUser}:${year}:*`;
-                const keys = await kv.keys(pattern);
-                const result = {};
-                for (const key of keys) {
-                    result[key] = await kv.get(key);
-                }
-                return res.status(200).json({ data: result });
-            }
-
-            // All data (for this user)
-            const allKeys = await kv.keys(`wip:${targetUser}:*`);
-            const all = {};
-            for (const key of allKeys) {
-                all[key] = await kv.get(key);
-            }
-            return res.status(200).json({ data: all });
+            return res.json({ data: items });
         }
 
-        // --- UPDATE (PUT) ---
-        // (Unchanged) - Always applies to the authenticated user
+        // ------------------------------------------------------
+        // UPDATE (PUT)
+        // ------------------------------------------------------
         if (req.method === 'PUT') {
             const { date, points } = req.body;
-            if (!date || !Array.isArray(points))
-                return res.status(400).json({ message: 'Date and points[] are required.' });
 
-            const key = buildKey(date, authenticatedUser);
-            const existing = await kv.get(key);
-            if (!existing)
-                return res.status(404).json({ message: `No WIP found for ${key}` });
+            if (!date || !Array.isArray(points)) {
+                return res.status(400).json({ message: 'date and points[] required' });
+            }
 
-            await kv.set(key, points);
-            return res.status(200).json({ success: true, message: `Updated WIP for ${key}` });
+            const existing = await WIP.findOne({ username: authenticatedUser, date });
+            if (!existing) {
+                return res.status(404).json({ message: 'No entry found' });
+            }
+
+            await WIP.updateOne(
+                { username: authenticatedUser, date },
+                { $set: { points } }
+            );
+
+            return res.json({ success: true });
         }
 
-        // --- DELETE ---
-        // (Unchanged) - Always applies to the authenticated user
+        // ------------------------------------------------------
+        // DELETE
+        // ------------------------------------------------------
         if (req.method === 'DELETE') {
             const { year, month, day } = req.query;
-            let pattern = `wip:${authenticatedUser}`;
-            if (year) pattern += `:${year}`;
-            if (year && month) pattern += `:${month}`;
-            if (year && month && day) pattern += `:${day}`;
-            if (!day) pattern += '*';
 
-            const keys = await kv.keys(pattern);
-            if (keys.length === 0)
-                return res.status(404).json({ message: 'No matching keys found.' });
+            const filter = { username: authenticatedUser };
 
-            for (const key of keys) await kv.del(key);
-            return res.status(200).json({ success: true, message: `Deleted ${keys.length} record(s).` });
+            if (year) filter.year = Number(year);
+            if (month) filter.month = month;
+            if (day) filter.day = day;
+
+            const result = await WIP.deleteMany(filter);
+
+            return res.json({ success: true, deleted: result.deletedCount });
         }
 
-        // --- Invalid Method ---
-        res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        // Invalid
+        return res.status(405).send("Method Not Allowed");
+
     } catch (err) {
-        console.error('WIP Handler Error:', err);
-        return res.status(500).json({ message: 'Internal Server Error', error: err.message });
+        console.error("Mongo Handler Error:", err);
+        return res.status(500).json({ message: 'Internal Error' });
     }
 }

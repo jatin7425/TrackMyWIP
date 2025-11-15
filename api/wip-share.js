@@ -1,107 +1,126 @@
-import { kv } from '@vercel/kv';
-import jwt from 'jsonwebtoken';
-import { parse } from 'cookie';
+import jwt from "jsonwebtoken";
+import { parse } from "cookie";
+import { MongoClient } from "mongodb";
+
+const MONGO_URL = process.env.MONGODB_URI;
+const DB_NAME = process.env.DB_NAME || "wip_tracker";
+
+let client;
+let db;
+
+async function getDb() {
+    if (db) return db;
+
+    client = new MongoClient(MONGO_URL);
+    await client.connect();
+
+    db = client.db(DB_NAME);
+    return db;
+}
 
 const getUsernameFromToken = (req) => {
     const { JWT_SECRET } = process.env;
-    const cookies = parse(req.headers.cookie || '');
+    const cookies = parse(req.headers.cookie || "");
     const token = cookies.auth_token;
     if (!token) return null;
+
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
         return decoded.username || null;
-    } catch (err) {
+    } catch {
         return null;
     }
 };
 
 export default async function handler(req, res) {
-    // --- Handle CORS ---
-    res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    if (req.method === 'OPTIONS') return res.status(200).end();
+    res.setHeader("Access-Control-Allow-Origin", req.headers.origin || "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    if (req.method === "OPTIONS") return res.status(200).end();
 
-    // --- Authentication ---
-    const authenticatedUser = getUsernameFromToken(req);
-    if (!authenticatedUser) {
-        return res.status(401).json({ message: 'Unauthorized. Please log in.' });
-    }
+    const username = getUsernameFromToken(req);
+    if (!username) return res.status(401).json({ message: "Unauthorized" });
 
-    // Define the keys for our permissions Sets
-    // 1. List of users I have given access to:
-    const myShareListKey = `share:${authenticatedUser}`;
-    // 2. List of users whose data I can access:
-    const myAccessListKey = `access:${authenticatedUser}`;
+    const db = await getDb();
+    const usersCol = db.collection("users");
+    const shareCol = db.collection("shares");
 
     try {
-        // --- GRANT ACCESS (POST) ---
-        if (req.method === 'POST') {
+        // ------- POST → GRANT ACCESS -------
+        if (req.method === "POST") {
             const { shareWithUser } = req.body;
-            if (!shareWithUser) {
-                return res.status(400).json({ message: 'shareWithUser is required.' });
-            }
-            if (shareWithUser === authenticatedUser) {
-                return res.status(400).json({ message: 'You cannot share with yourself.' });
-            }
 
-            // Check if the user we are sharing with actually exists
-            const userExists = await kv.exists(`user:${shareWithUser}`);
-            if (!userExists) {
+            if (!shareWithUser)
+                return res.status(400).json({ message: "shareWithUser is required." });
+
+            if (shareWithUser === username)
+                return res.status(400).json({ message: "Cannot share with yourself." });
+
+            // Check if target user exists
+            const userExists = await usersCol.findOne({ username: shareWithUser });
+            if (!userExists)
                 return res.status(404).json({ message: `User '${shareWithUser}' not found.` });
-            }
 
-            // Use a transaction to update both lists safely
-            const tx = kv.multi();
-            // Add user to my "share" list
-            tx.sadd(myShareListKey, shareWithUser);
-            // Add my name to their "access" list
-            tx.sadd(`access:${shareWithUser}`, authenticatedUser);
-            await tx.exec();
+            // Update my outbox
+            await shareCol.updateOne(
+                { username },
+                { $addToSet: { iGaveAccessTo: shareWithUser } },
+                { upsert: true }
+            );
 
-            return res.status(200).json({ success: true, message: `Successfully shared WIP data with ${shareWithUser}.` });
-        }
-
-        // --- LIST SHARES (GET) ---
-        // This now returns BOTH lists
-        if (req.method === 'GET') {
-            const [iGaveAccessTo, iCanAccess] = await Promise.all([
-                kv.smembers(myShareListKey),
-                kv.smembers(myAccessListKey)
-            ]);
+            // Update their inbox
+            await shareCol.updateOne(
+                { username: shareWithUser },
+                { $addToSet: { iCanAccess: username } },
+                { upsert: true }
+            );
 
             return res.status(200).json({
                 success: true,
-                iGaveAccessTo, // List of users I shared with
-                iCanAccess     // List of users who shared with me
+                message: `Shared WIP with ${shareWithUser}`
             });
         }
 
-        // --- REVOKE ACCESS (DELETE) ---
-        if (req.method === 'DELETE') {
-            const { revokeUser } = req.body;
-            if (!revokeUser) {
-                return res.status(400).json({ message: 'revokeUser is required.' });
-            }
-
-            // Use a transaction to update both lists safely
-            const tx = kv.multi();
-            // Remove user from my "share" list
-            tx.srem(myShareListKey, revokeUser);
-            // Remove my name from their "access" list
-            tx.srem(`access:${revokeUser}`, authenticatedUser);
-            await tx.exec();
-
-            return res.status(200).json({ success: true, message: `Stopped sharing WIP data with ${revokeUser}.` });
+        // ------- GET → LIST WHO I SHARED WITH & WHO SHARED WITH ME -------
+        if (req.method === "GET") {
+            const doc = await shareCol.findOne({ username });
+            return res.status(200).json({
+                success: true,
+                iGaveAccessTo: doc?.iGaveAccessTo || [],
+                iCanAccess: doc?.iCanAccess || [],
+            });
         }
 
-        // --- Invalid Method ---
-        res.setHeader('Allow', ['GET', 'POST', 'DELETE', 'OPTIONS']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        // ------- DELETE → REVOKE ACCESS -------
+        if (req.method === "DELETE") {
+            const { revokeUser } = req.body;
 
+            if (!revokeUser)
+                return res.status(400).json({ message: "revokeUser is required." });
+
+            // Remove from my list
+            await shareCol.updateOne(
+                { username },
+                { $pull: { iGaveAccessTo: revokeUser } }
+            );
+
+            // Remove me from theirs
+            await shareCol.updateOne(
+                { username: revokeUser },
+                { $pull: { iCanAccess: username } }
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: `Revoked sharing with ${revokeUser}`
+            });
+        }
+
+        res.setHeader("Allow", ["GET", "POST", "DELETE", "OPTIONS"]);
+        return res.status(405).end(`Method ${req.method} Not Allowed`);
     } catch (err) {
-        console.error('Share API Error:', err);
-        return res.status(500).json({ message: 'Internal Server Error', error: err.message });
+        console.error("Share API Error:", err);
+        return res.status(500).json({ message: "Server Error" });
     }
 }
