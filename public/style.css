@@ -50,6 +50,9 @@ body {
     background-color: #f4f4f4;
     padding: 10px;
 
+    /* Reserve space at the bottom so footer is not covered by nav content */
+    padding-bottom: 72px;
+
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
     transform: translateX(0);
@@ -118,4 +121,79 @@ body.sidebar-hidden #main-content {
     color: #333;
     font-size: large;
     cursor: pointer;
+}
+
+/* Sidebar logout button styling */
+#sidebar .logout-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    padding: 12px 15px;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+}
+
+#sidebar .logout-btn:hover {
+    background-color: #f2dede; /* subtle red on hover to indicate destructive action */
+    color: #a94442;
+}
+
+/* Make the logout list item match other items when hovered via the button */
+#sidebar li .logout-btn {
+    display: block;
+}
+
+/* Sidebar footer: username + logout icon. Use sticky so it stays visible at bottom
+   while remaining part of the normal flow; makes it robust across layouts. */
+#sidebar .sidebar-footer {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-top: 1px solid #e6e6e6;
+    background: #f8f8f8;
+    z-index: 5;
+    margin-top: 400%;
+}
+
+#sidebar .logout-icon-btn {
+    background: transparent;
+    border: none;
+    padding: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    cursor: pointer;
+    background: #ffe7e4;
+    color: #9a2e2e;
+    border-radius: 6px;
+    padding: 5px;
+    border: #9a2e2e 1px solid;
+}
+
+#sidebar .logout-icon-btn:hover {
+    background: #fdecea;
+    border: #9a2e2e 1px solid;
+    color: #9a2e2e;
+    border-radius: 6px;
+}
+
+#sidebar .sidebar-username {
+    font-size: 0.95rem;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Make nav area scrollable so footer remains visible */
+#sidebar nav {
+    max-height: calc(100vh - 72px);
+    overflow: auto;
 }
