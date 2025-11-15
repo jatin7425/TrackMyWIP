@@ -55,6 +55,7 @@
 
 #share-form {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
 }
 
@@ -64,6 +65,7 @@
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 1rem;
+    flex-grow: 1;
 }
 
 #share-form button {
@@ -76,6 +78,7 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.2s;
+    flex-grow: 1;
 }
 
 #share-form button:hover {
@@ -278,6 +281,7 @@
     font-weight: 700;
     color: var(--accent);
     margin: 0;
+    line-height: 1.05;
 }
 
 
@@ -302,6 +306,7 @@
     padding-top: 1rem;
     padding-bottom: 1rem;
     margin: 0;
+    overflow-x: auto;
 }
 
 .wip-day-card li {
@@ -309,6 +314,15 @@
     color: #333;
     margin-bottom: 0.5rem;
     line-height: 1.5;
+    white-space: nowrap;
+    padding-left: 10px;
+}
+
+#wip-fetch-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
 }
 
 /* small-screen responsive */
@@ -330,11 +344,56 @@
         font-size: 22px
     }
 
-    .wip-date {
+    .wip-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px
+    }
+
+    .wip-day-card h4 {
         font-size: 20px
     }
 
     .primary-btn {
         width: 100%
+    }
+}
+
+
+@media (max-width:550px) {
+    .wip-day-card h4 {
+        font-size: 17.5px
+    }
+
+    .wip-item {
+        font-size: 15px;
+        padding-right: 10px;
+    }
+
+    .wip-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px
+    }
+
+    #wip-fetch-form button {
+        flex-grow: 1;
+    }
+
+    .viewer-header h2 {
+        font-size: 20px;
+    }
+
+    #wip-controls form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #wip-year {
+        flex-grow: 1;
+    }
+
+    #wip-month {
+        flex-grow: 1;
     }
 }
