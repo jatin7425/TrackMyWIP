@@ -1,13 +1,8 @@
-// public/home.js — simplified: Google SSO only
-
+// Minimal Google SSO-only client UI
 document.addEventListener('DOMContentLoaded', async () => {
     const authContainer = document.getElementById('home-container-right');
-    if (!authContainer) {
-        console.error('Error: Auth container #home-container-right not found.');
-        return;
-    }
+    if (!authContainer) return;
 
-    // Check session; if logged in redirect to app
     try {
         const res = await fetch('/api/auth/check-session', { method: 'GET' });
         const data = await res.json();
@@ -15,8 +10,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.location.href = '/view-wips';
             return;
         }
-    } catch (err) {
-        console.warn('Session check failed:', err);
+    } catch (e) {
+        console.warn('Session check failed:', e);
     }
 
     authContainer.innerHTML = `

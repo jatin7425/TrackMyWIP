@@ -1,6 +1,6 @@
-// Deprecated: this endpoint was part of the OTP-based authentication flow.
-// The application now uses Google SSO exclusively. Keep this handler only
-// to inform clients and provide a clear migration message.
+// Backup of current `login-start.js` (deprecated/otp). This is a copy of the active file
+// at the time of the conservative cleanup. It is kept as a backup in case you need
+// to restore the previous OTP-based login behavior.
 
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');

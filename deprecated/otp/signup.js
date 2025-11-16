@@ -1,4 +1,4 @@
-// Deprecated endpoint: Signup via form is removed. Users are managed by Google SSO.
+// Backup of current `signup.js` (deprecated/otp).
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
