@@ -1,4 +1,4 @@
-# wiptracker
+# WipTracker
 
 NOTE: This repository has been converted to use Google Single Sign-On (SSO) exclusively.
 
