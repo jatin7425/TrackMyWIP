@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { href: '/add-wip', title: 'Add WIP' },
             { href: '/view-wips', title: 'View WIPs' },
             { href: '/shared-wips', title: 'Shared WIPs' },
+            // { href: '/get-extension', title: 'Extension' },
         ];
 
         const nav = document.createElement('nav');
