@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updatePreview();
         });
 
-        div.append(moveUpBtn, moveDownBtn, input, checkGrammarBtn, removeBtn);
+        div.append(moveUpBtn, moveDownBtn, input, removeBtn);
         bulletPointsContainer.appendChild(div);
 
         updatePreview();

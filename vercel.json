@@ -5,11 +5,7 @@
     "outputDirectory": "public",
     "rewrites": [
         {
-            "source": "/(.*)",
-            "destination": "/public/$1"
-        },
-        {
-            "source": "/(.*)",
+            "source": "/((?!api/).*)",
             "destination": "/public/$1"
         }
     ]

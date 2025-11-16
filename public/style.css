@@ -53,6 +53,11 @@ body {
     /* Reserve space at the bottom so footer is not covered by nav content */
     padding-bottom: 72px;
 
+    display: flex;
+    flex-direction: column;
+    justify-items: space-between;
+    justify-content: space-between;
+
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
     transform: translateX(0);
@@ -137,7 +142,8 @@ body.sidebar-hidden #main-content {
 }
 
 #sidebar .logout-btn:hover {
-    background-color: #f2dede; /* subtle red on hover to indicate destructive action */
+    background-color: #f2dede;
+    /* subtle red on hover to indicate destructive action */
     color: #a94442;
 }
 
@@ -146,54 +152,101 @@ body.sidebar-hidden #main-content {
     display: block;
 }
 
-/* Sidebar footer: username + logout icon. Use sticky so it stays visible at bottom
-   while remaining part of the normal flow; makes it robust across layouts. */
-#sidebar .sidebar-footer {
-    position: sticky;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 12px;
-    border-top: 1px solid #e6e6e6;
-    background: #f8f8f8;
-    z-index: 5;
-    margin-top: 400%;
-}
-
-#sidebar .logout-icon-btn {
-    background: transparent;
-    border: none;
-    padding: 6px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: #333;
-    cursor: pointer;
-    background: #ffe7e4;
-    color: #9a2e2e;
-    border-radius: 6px;
-    padding: 5px;
-    border: #9a2e2e 1px solid;
-}
-
-#sidebar .logout-icon-btn:hover {
-    background: #fdecea;
-    border: #9a2e2e 1px solid;
-    color: #9a2e2e;
-    border-radius: 6px;
-}
-
-#sidebar .sidebar-username {
-    font-size: 0.95rem;
-    color: #333;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
 
 /* Make nav area scrollable so footer remains visible */
 #sidebar nav {
     max-height: calc(100vh - 72px);
     overflow: auto;
+} */
+
+/* FOOTER BUTTON WRAPPER */
+.sidebar-footer {
+    position: sticky;
+    bottom: 0;
+    padding: 12px;
+    background: #f8f8f8;
+    border-top: 1px solid #ddd;
+    z-index: 20;
+}
+
+/* BUTTON 1: Username + Logout */
+.tmw-user-logout-btn {
+    width: 100%;
+    background: #1f2937;
+    color: #fff;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.tmw-user-logout-btn:hover {
+    background: #111827;
+}
+
+/* BUTTON 2: Support */
+.tmw-support-btn2 {
+    width: 100%;
+    background: #ffffff;
+    color: #222;
+    border: 1px solid #ddd;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.tmw-support-btn2:hover {
+    background: #f3f4f6;
+}
+
+/* MODAL BASE */
+.support-overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* MODAL BOX */
+.support-modal {
+    width: 320px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.support-modal h3 {
+    margin-bottom: 4px;
+}
+
+.support-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.support-actions button {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #f8f8f8;
+    cursor: pointer;
+}
+
+.support-actions button:hover {
+    background: #e5e7eb;
 }
