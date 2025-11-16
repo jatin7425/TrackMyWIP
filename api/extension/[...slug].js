@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     const urlBase = req.headers.host ? `http://${req.headers.host}` : 'http://localhost';
     const full = new URL(req.url, urlBase);
     const pathname = full.pathname || req.url;
-    const parts = pathname.replace(/^\/api\/auth\/?/, '').split('/').filter(Boolean);
+    const parts = pathname.replace(/^\/api\/extension\/?/, '').split('/').filter(Boolean);
     const route = parts.join('/');
     
     try {
