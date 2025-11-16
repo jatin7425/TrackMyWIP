@@ -1,3 +1,11 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    overflow: hidden;
+}
+
 /* ===== Base Layout ===== */
 #auth-main-content {
     display: flex;
@@ -6,6 +14,7 @@
     height: 100vh;
     width: 100vw;
     background: linear-gradient(120deg, #e3f2fd 0%, #f8f9fa 100%);
+    overflow: hidden;
 }
 
 /* Split Layout */
@@ -13,12 +22,12 @@
     display: flex;
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 
 /* ===== LEFT SIDE ===== */
 #home-container-left {
     flex: 1;
-    padding: 4rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -26,6 +35,7 @@
     backdrop-filter: blur(6px);
     border-right: 1px solid #eee;
     box-shadow: inset -2px 0 6px rgba(0, 0, 0, 0.05);
+    width: 100%;
 }
 
 #home-container-left h2 {
@@ -45,6 +55,7 @@
     line-height: 1.6;
     max-width: 420px;
     margin: 0 auto;
+    width: 50%;
 }
 
 /* ===== RIGHT SIDE ===== */
@@ -56,8 +67,7 @@
 }
 
 /* ===== AUTH FORM ===== */
-#signup-form,
-#login-form {
+#signup-form{
     width: 100%;
     max-width: 420px;
     background: #fff;
@@ -68,81 +78,9 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    margin: auto;
     gap: 1.2rem;
 }
-
-#signup-form h2,
-#login-form h2 {
-    text-align: center;
-    color: #111;
-    margin-bottom: 0.5rem;
-    font-size: 1.8rem;
-}
-
-#signup-form label,
-#login-form label {
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 0.3rem;
-}
-
-#signup-form input,
-#login-form input {
-    padding: 0.8rem 1rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-#signup-form input:focus,
-#login-form input:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
-}
-
-#signup-form button,
-#login-form button {
-    padding: 0.9rem;
-    font-size: 1.1rem;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    font-weight: 600;
-}
-
-#signup-form button:hover,
-#login-form button:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-}
-
-#signup-form p,
-#login-form p {
-    text-align: center;
-    color: #555;
-    font-size: 0.95rem;
-    margin-top: 0.8rem;
-}
-
-#signup-form a,
-#login-form a {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-#signup-form a:hover,
-#login-form a:hover {
-    text-decoration: underline;
-}
-
 /* ===== Animations ===== */
 @keyframes fadeIn {
     from {
@@ -157,7 +95,7 @@
 }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 900px) {
+@media (max-width: 1080px) {
     #home-container {
         flex-direction: column;
         align-items: center;
@@ -200,8 +138,7 @@
         padding: 1rem;
     }
 
-    #signup-form,
-    #login-form {
+    #signup-form{
         background: #fff;
         border-radius: 16px;
         box-shadow: 0 15px 45px rgba(0, 0, 0, 0.25);
@@ -224,3 +161,9 @@
         }
     }
 } 
+
+@media (max-width: 500px) {
+    #signup-form{
+        padding: 1.5rem 1rem;
+    }
+}
