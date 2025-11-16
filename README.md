@@ -1,36 +1,152 @@
-# WipTracker
+# TrackMyWIP
 
-NOTE: This repository has been converted to use Google Single Sign-On (SSO) exclusively.
+TrackMyWIP is a lightweight, fast, and minimal Work-In-Progress (WIP) tracking tool designed for developers, freelancers, and students.
+It focuses on one thing: making it extremely easy to record your daily work updates and view or share them later.
 
-Older OTP-based signup/login endpoints and Redis-backed OTP storage have been deprecated. The app now uses Google OAuth for authentication; the frontend is updated to load a Google-only sign-in UI.
+The application is live at:
+**[https://www.trackmywip.in](https://www.trackmywip.in)**
 
-## Redis / Upstash (deprecated)
+---
 
-Redis/Upstash was previously used for OTP storage. That flow is deprecated and Redis is no longer required for authentication. If you still run the old OTP endpoints (they will respond with 410), you can ignore Redis configuration.
+## Overview
 
-## Google OAuth
+Most productivity tools are heavy, slow, or filled with unnecessary features.
+TrackMyWIP keeps the workflow simple:
 
-To enable Google OAuth sign-in, set the following environment variables:
+* Write what you worked on today
+* Save it
+* View and update entries whenever needed
+* Share your WIPs with other users only when you choose to
 
-- `CLIENT_ID` - Google OAuth client ID (e.g. the value you provided)
-- `CLIENT_SECRET` - Google OAuth client secret
-- `REDIRECT_URI` - Must match the redirect URI configured in Google Cloud Console (e.g. `http://localhost:3000/api/auth/callback/google`)
+No complex dashboards.
+No tasks, projects, or clutter.
+Just fast daily logging.
 
-Endpoints added:
-- `GET /api/auth/login-google` — redirects the browser to Google's OAuth consent screen
-- `GET /api/auth/callback/google` — handles the OAuth callback, creates/updates the user, sets the `auth_token` cookie and redirects to `/view-wips`
+---
 
-Notes:
-- The server uses the email address returned by Google as the user's `email` and as the `username` for uniqueness.
-- Make sure `JWT_SECRET` is set so the server can sign session cookies.
+## Features
 
-Deprecated OTP code backup
--------------------------
-I moved a safe backup of the OTP-related handlers into `deprecated/otp/` so you can restore the old behavior if needed. The files included are:
+### Daily WIP Entry
 
-- `deprecated/otp/login-start.js`
-- `deprecated/otp/login-verify.js`
-- `deprecated/otp/signup.js`
-- `deprecated/otp/redisClient.js`
+Record your work for each day as a list of bullet points. The system groups entries by date automatically.
 
-The active endpoints in `api/auth/` return HTTP 410 and clearly indicate that OTP flow is deprecated. If you'd rather fully delete the files or restore the backups as active endpoints, tell me and I'll do it on a branch.
+### Edit and Update Anytime
+
+You can update any day’s entries without affecting others.
+
+### View and Filter
+
+Filter WIPs by year, month, or day.
+Useful for reviews, documentation, or reporting.
+
+### Share Access With Other Users
+
+You can explicitly allow other users to view your WIPs.
+This is ideal for teams, clients, or mentors.
+
+### Clean and Fast Interface
+
+The interface prioritizes speed and simplicity, making daily entry frictionless.
+
+### Secure Authentication
+
+User login handled through JWT cookies.
+Each WIP is tied to its specific authenticated user.
+
+---
+
+## Tech Stack
+
+**Frontend**
+HTML
+CSS
+JavaScript
+Vanilla JS for components
+
+**Backend**
+Vercel Serverless Functions (Node.js)
+Protected routes with JWT-based session cookies
+
+**Database**
+MongoDB
+
+---
+
+## API Structure
+
+The backend exposes routes through Vercel Functions.
+
+Key endpoints include:
+
+### `POST /api/wip`
+
+Create or update the WIP entry for a specific date.
+
+### `GET /api/wip`
+
+Retrieve WIPs for the authenticated user or for another user (if access is granted).
+
+### `PUT /api/wip`
+
+Update the list of bullet points for a given date.
+
+### `DELETE /api/wip`
+
+Delete entries based on date filters.
+
+### Access Control
+
+Dedicated endpoints for managing who can view your WIPs.
+
+---
+
+## Deployment
+
+TrackMyWIP is deployed on Vercel.
+The live application is accessible at:
+
+**[https://www.trackmywip.in](https://www.trackmywip.in)**
+
+Backend functions are served through the same Vercel project.
+MongoDB Atlas (or equivalent) is used for data storage.
+
+---
+
+## Local Development
+
+1. Clone the repository
+   `git clone https://github.com/<your-username>/TrackMyWIP.git`
+
+2. Install dependencies
+   `npm install`
+
+3. Set environment variables:
+
+   ```
+   MONGODB_URI=<your MongoDB URI>
+   JWT_SECRET=<your JWT secret>
+   DB_NAME=wip_tracker
+   ```
+
+4. Run locally with Vercel CLI:
+
+   ```
+   vercel dev
+   ```
+
+5. Access at:
+   `http://localhost:3000`
+
+---
+
+## Purpose of the Project
+
+TrackMyWIP fills a very specific gap:
+
+* You need to record what you worked on
+* You don’t want a full project management tool
+* You want to review your daily progress later
+* You want to share it selectively with others
+* You want something lightweight and functional
+
+This tool exists to provide the simplest workflow possible.
