@@ -68,7 +68,7 @@ export default async function handler(req, res) {
     let user = await users.findOne({ email });
     if (!user) {
       // create a new user. Use email as username to keep it unique.
-      const username = email;
+      const username = email.split('@')[0];
       const newUser = { username, email, name: profile.name, oauthProvider: 'google', createdAt: Date.now() };
       const r = await users.insertOne(newUser);
       user = { ...newUser, _id: r.insertedId };
