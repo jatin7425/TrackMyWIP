@@ -8,5 +8,11 @@
             "source": "/((?!api/).*)",
             "destination": "/public/$1"
         }
+    ],
+    "crons": [
+        {
+            "path": "/api/ping-railway",
+            "schedule": "*/30 * * * *"
+        }
     ]
 }
